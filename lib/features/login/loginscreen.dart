@@ -165,6 +165,7 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../common_widgets.dart/custom_alert_dialog.dart';
 import '../../common_widgets.dart/custom_button.dart';
@@ -172,6 +173,7 @@ import '../../common_widgets.dart/custom_text_formfield.dart';
 import '../../theme/app_theme.dart';
 import '../../util/value_validator.dart';
 import '../home/home_screen.dart';
+import '../home_main/home_screen.dart';
 import 'login_bloc/login_bloc.dart';
 
 class Loginscreen extends StatefulWidget {
@@ -187,6 +189,24 @@ class _LoginScreenState extends State<Loginscreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isObscure = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+        const Duration(
+          milliseconds: 100,
+        ), () {
+      User? currentUser = Supabase.instance.client.auth.currentUser;
+      if (currentUser != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

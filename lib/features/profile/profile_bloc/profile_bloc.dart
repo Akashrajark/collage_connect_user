@@ -15,7 +15,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       try {
         emit(ProfileLoadingState());
         SupabaseClient supabaseClient = Supabase.instance.client;
-        SupabaseQueryBuilder table = supabaseClient.from('users');
+        SupabaseQueryBuilder table = supabaseClient.from('customers');
 
         if (event is GetAllProfileEvent) {
           PostgrestFilterBuilder<List<Map<String, dynamic>>> query = table
