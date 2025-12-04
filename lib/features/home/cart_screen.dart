@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/web.dart';
-
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../../common_widgets.dart/custom_alert_dialog.dart';
 import 'carts_bloc/carts_bloc.dart';
 import 'orders_bloc/orders_bloc.dart';
@@ -16,20 +16,76 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   final CartsBloc _cartsBloc = CartsBloc();
+  late Razorpay _razorpay;
   List<Map<String, dynamic>> _carts = [];
   double _totalPrice = 0.0;
   // DateTime? _pickUpTime;
 
   @override
   void initState() {
+    _razorpay = Razorpay();
+
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     super.initState();
     _cartsBloc.add(GetAllCartsEvent(params: {}));
   }
 
   void _calculateTotalPrice() {
     _totalPrice = _carts.fold(0.0, (sum, item) {
-      return sum + (item['shop_products']['price'] * item['quantity']);
+      return sum + (item['canteen_products']['price'] * item['quantity']);
     });
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Payment Successful: ${response.paymentId}")),
+    );
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Payment Failed: ${response.message}")),
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("External Wallet Selected: ${response.walletName}")),
+    );
+  }
+
+  void _startPayment({
+    required int amount,
+    // required String name,
+  }) {
+    var options = {
+      'key': 'rzp_test_7DHXFKNuMLiTBe', // Replace with your API Key
+      'amount': amount * 100, // 100 INR (in paise)
+      'name': "Canteen Order",
+      'description': 'Test Payment',
+      'prefill': {'contact': '9999999999', 'email': 'test@example.com'},
+      'theme': {'color': '#3399cc'},
+      'method': {
+        'card': true, // Enable card payments
+        'netbanking': false, // Disable net banking
+        'upi': true, // Disable UPI (Google Pay, PhonePe, etc.)
+        'wallet': false, // Disable wallets
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
   }
 
   void _showBottomSheet(BuildContext context) {
@@ -86,8 +142,7 @@ class _CartScreenState extends State<CartScreen> {
                     // ),
                     const Text(
                       'Total Price',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -99,6 +154,7 @@ class _CartScreenState extends State<CartScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
+                          _startPayment(amount: _totalPrice.toInt());
                           // if (_pickUpTime == null) {
                           //   showDialog(
                           //     context: context,
@@ -113,16 +169,19 @@ class _CartScreenState extends State<CartScreen> {
                           //   );
                           //   return;
                           // } else {
-                          BlocProvider.of<OrdersBloc>(context).add(
-                            AddOrderEvent(
-                              orderDetails: {
-                                // 'p_pickup_time':
-                                //     _pickUpTime!.toIso8601String(),
-                                'p_status': 'Pending',
-                                'p_price': _totalPrice,
-                              },
-                            ),
-                          );
+                          _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) {
+                            BlocProvider.of<OrdersBloc>(context).add(
+                              AddOrderEvent(
+                                orderDetails: {
+                                  // 'p_pickup_time':
+                                  //     _pickUpTime!.toIso8601String(),
+                                  'p_status': 'Pending',
+                                  'p_price': _totalPrice,
+                                },
+                              ),
+                            );
+                          });
+
                           // }
                         },
                         style: ElevatedButton.styleFrom(
@@ -184,22 +243,20 @@ class _CartScreenState extends State<CartScreen> {
             }
             return ListView.separated(
               itemBuilder: (context, index) => ProductCard(
-                imageUrl: _carts[index]['shop_products']['image_url'],
-                title: _carts[index]['shop_products']['name'],
-                subtitle: _carts[index]['shop_products']['stock'].toString(),
-                price: _carts[index]['shop_products']['price'].toString(),
+                imageUrl: _carts[index]['canteen_products']['image_url'],
+                title: _carts[index]['canteen_products']['name'],
+                subtitle: _carts[index]['canteen_products']['stock'].toString(),
+                price: _carts[index]['canteen_products']['price'].toString(),
                 cardColor: Colors.white,
                 buttonColor: Colors.green,
                 onIncrement: () {
-                  BlocProvider.of<CartsBloc>(context)
-                      .add(AddCartEvent(cartDetails: {
+                  BlocProvider.of<CartsBloc>(context).add(AddCartEvent(cartDetails: {
                     'p_product_id': _carts[index]['product_id'],
                     'p_quantity': 1,
                   }));
                 },
                 onDecrement: () {
-                  BlocProvider.of<CartsBloc>(context)
-                      .add(AddCartEvent(cartDetails: {
+                  BlocProvider.of<CartsBloc>(context).add(AddCartEvent(cartDetails: {
                     'p_product_id': _carts[index]['product_id'],
                     'p_quantity': -1,
                   }));

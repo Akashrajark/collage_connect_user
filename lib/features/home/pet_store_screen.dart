@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../common_widgets.dart/custom_search.dart';
 import 'shop_detailed_list_page.dart';
 import 'shops_bloc/shops_bloc.dart';
 
 class PetStoreScreen extends StatefulWidget {
+  const PetStoreScreen({super.key});
+
   @override
   State<PetStoreScreen> createState() => _PetStoreScreenState();
 }
@@ -28,7 +29,7 @@ class _PetStoreScreenState extends State<PetStoreScreen> {
           if (shopsState is ShopsFailureState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Failed to load pet stores, Try Again!'),
+                content: Text('Failed to load Canteen, Try Again!'),
               ),
             );
           }
@@ -78,8 +79,7 @@ class _PetStoreScreenState extends State<PetStoreScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               ClipRRect(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(16.0)),
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
                                 child: Image.network(
                                   store['image_url']!,
                                   height: 170,
@@ -91,9 +91,7 @@ class _PetStoreScreenState extends State<PetStoreScreen> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
                                   store['name']!,
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],

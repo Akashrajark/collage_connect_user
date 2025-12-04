@@ -22,7 +22,7 @@ class _ShopDetailedListPageState extends State<ShopDetailedListPage> {
 
   @override
   void initState() {
-    products = widget.shop['shop_products'];
+    products = widget.shop['canteen_products'];
     // categories = widget.categories;
     super.initState();
   }
@@ -65,8 +65,7 @@ class _ShopDetailedListPageState extends State<ShopDetailedListPage> {
                   flexibleSpace: FlexibleSpaceBar(
                     title: Text(
                       widget.shop['name'],
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     background: Image.network(
                       widget.shop['image_url'],
@@ -87,15 +86,12 @@ class _ShopDetailedListPageState extends State<ShopDetailedListPage> {
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
+                                .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
                           ),
                         ),
                         const SizedBox(height: 5),
                         ListView.separated(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) => SizedBox(
@@ -104,20 +100,17 @@ class _ShopDetailedListPageState extends State<ShopDetailedListPage> {
                               imageUrl: products[index]['image_url'],
                               title: products[index]['name'],
                               subtitle: products[index]['stock'].toString(),
-                              price:
-                                  '₹${products[index]['price'].toString()}/${products[index]['unit'].toString()}',
+                              price: '₹${products[index]['price'].toString()}/${products[index]['unit'].toString()}',
                               cardColor: Colors.white,
                               buttonColor: Colors.green,
                               onIncrement: () {
-                                BlocProvider.of<CartsBloc>(context)
-                                    .add(AddCartEvent(cartDetails: {
+                                BlocProvider.of<CartsBloc>(context).add(AddCartEvent(cartDetails: {
                                   'p_product_id': products[index]['id'],
                                   'p_quantity': 1,
                                 }));
                               },
                               onDecrement: () {
-                                BlocProvider.of<CartsBloc>(context)
-                                    .add(AddCartEvent(cartDetails: {
+                                BlocProvider.of<CartsBloc>(context).add(AddCartEvent(cartDetails: {
                                   'p_product_id': products[index]['id'],
                                   'p_quantity': -1,
                                 }));

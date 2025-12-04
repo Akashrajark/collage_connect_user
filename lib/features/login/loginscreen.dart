@@ -173,7 +173,6 @@ import '../../common_widgets.dart/custom_text_formfield.dart';
 import '../../theme/app_theme.dart';
 import '../../util/value_validator.dart';
 import '../home/home_screen.dart';
-import '../home_main/home_screen.dart';
 import 'login_bloc/login_bloc.dart';
 
 class Loginscreen extends StatefulWidget {
@@ -254,8 +253,7 @@ class _LoginScreenState extends State<Loginscreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -267,10 +265,7 @@ class _LoginScreenState extends State<Loginscreen> {
                               ),
                               Text(
                                 'Log in',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineLarge!
-                                    .copyWith(
+                                style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                                       color: Colors.white.withAlpha(220),
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -281,10 +276,7 @@ class _LoginScreenState extends State<Loginscreen> {
                               ),
                               Text(
                                 'Email',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                       color: Colors.white70,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -303,10 +295,7 @@ class _LoginScreenState extends State<Loginscreen> {
                               ),
                               Text(
                                 'Password',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                       color: Colors.white70,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -326,9 +315,7 @@ class _LoginScreenState extends State<Loginscreen> {
                                           setState(() {});
                                         },
                                         icon: Icon(
-                                          isObscure
-                                              ? Icons.visibility_off
-                                              : Icons.visibility,
+                                          isObscure ? Icons.visibility_off : Icons.visibility,
                                           color: Colors.white,
                                         )),
                                     border: const OutlineInputBorder(),
@@ -344,13 +331,13 @@ class _LoginScreenState extends State<Loginscreen> {
                               ),
                               CustomButton(
                                 inverse: true,
+                                isLoading: state is LoginLoadingState,
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     BlocProvider.of<LoginBloc>(context).add(
                                       LoginEvent(
                                         email: _emailController.text.trim(),
-                                        password:
-                                            _passwordController.text.trim(),
+                                        password: _passwordController.text.trim(),
                                       ),
                                     );
                                   }

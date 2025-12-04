@@ -14,11 +14,12 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       try {
         emit(ShopsLoadingState());
         SupabaseClient supabaseClient = Supabase.instance.client;
-        SupabaseQueryBuilder table = supabaseClient.from('shops');
+        SupabaseQueryBuilder table = supabaseClient.from('canteens');
 
         if (event is GetAllShopsEvent) {
-          PostgrestFilterBuilder<List<Map<String, dynamic>>> query =
-              table.select('*,shop_products(*)');
+          PostgrestFilterBuilder<List<Map<String, dynamic>>> query = table
+              .select('*,canteen_products(*)')
+              .eq('collage_user_id', supabaseClient.auth.currentUser!.appMetadata['collage_user_id']);
 
           if (event.params['query'] != null) {
             query = query.ilike('name', '%${event.params['query']}%');
@@ -28,8 +29,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
             query = query.eq('status', event.params['status']);
           }
 
-          List<Map<String, dynamic>> shops =
-              await query.order('id', ascending: true);
+          List<Map<String, dynamic>> shops = await query.order('id', ascending: true);
 
           emit(ShopsGetSuccessState(shops: shops));
         } else if (event is AddShopEvent) {
@@ -47,10 +47,8 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
           await table.delete().eq('id', event.shopId);
           emit(ShopsSuccessState());
         } else if (event is GetCategoriesEvent) {
-          List<Map<String, dynamic>> categories = await supabaseClient
-              .from('categories')
-              .select('*')
-              .order('id', ascending: true);
+          List<Map<String, dynamic>> categories =
+              await supabaseClient.from('categories').select('*').order('id', ascending: true);
           emit(CategoriesGetSuccessState(categories: categories));
         }
       } catch (e, s) {

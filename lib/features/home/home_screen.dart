@@ -1,11 +1,10 @@
 import 'package:college_connect_user/features/home/order_screen.dart';
 import 'package:college_connect_user/features/profile/profile_page.dart';
-import 'package:college_connect_user/profile_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 import 'cart_screen.dart';
-import 'petstore.dart';
+import 'pet_store_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,8 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ? AppBar(
               title: const Text(
                 "Collage Connect",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               centerTitle: false,
               backgroundColor: primaryColor,

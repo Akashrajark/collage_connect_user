@@ -17,9 +17,8 @@ class CartsBloc extends Bloc<CartsEvent, CartsState> {
         SupabaseQueryBuilder table = supabaseClient.from('cart');
 
         if (event is GetAllCartsEvent) {
-          PostgrestFilterBuilder<List<Map<String, dynamic>>> query = table
-              .select('*,shop_products!inner(*)')
-              .eq('customer_user_id', supabaseClient.auth.currentUser!.id);
+          PostgrestFilterBuilder<List<Map<String, dynamic>>> query =
+              table.select('*,canteen_products!inner(*)').eq('customer_user_id', supabaseClient.auth.currentUser!.id);
 
           if (event.params['query'] != null) {
             query = query.ilike(
@@ -37,10 +36,8 @@ class CartsBloc extends Bloc<CartsEvent, CartsState> {
             carts: carts,
           ));
         } else if (event is AddCartEvent) {
-          event.cartDetails['p_customer_user_id'] =
-              supabaseClient.auth.currentUser!.id;
-          await supabaseClient.rpc('insert_or_update_cart',
-              params: event.cartDetails);
+          event.cartDetails['p_customer_user_id'] = supabaseClient.auth.currentUser!.id;
+          await supabaseClient.rpc('insert_or_update_cart', params: event.cartDetails);
 
           emit(CartsSuccessState());
           // } else if (event is EditCartEvent) {

@@ -95,7 +95,7 @@ class _OrderScreenState extends State<OrderScreen> {
 class OrderDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> order;
 
-  const OrderDetailsScreen({Key? key, required this.order}) : super(key: key);
+  const OrderDetailsScreen({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -109,23 +109,18 @@ class OrderDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Order ID: ${order['id']}',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              Text('Order ID: ${order['id']}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               SizedBox(height: 16),
-              Text('Created At: ${order['created_at']}',
-                  style: TextStyle(fontSize: 18)),
+              Text('Created At: ${order['created_at']}', style: TextStyle(fontSize: 18)),
               SizedBox(height: 16),
-              Text('Status: ${order['status']}',
-                  style: TextStyle(fontSize: 18)),
+              Text('Status: ${order['status']}', style: TextStyle(fontSize: 18)),
               SizedBox(height: 16),
-              Text('Price: \$${order['price']}',
-                  style: TextStyle(fontSize: 18)),
+              Text('Price: \$${order['price']}', style: TextStyle(fontSize: 18)),
               SizedBox(height: 16),
-              Text('Items:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Items:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ...order['order_items'].map<Widget>((item) {
-                final product = item['shop_products'];
-                final shop = product['shops'];
+                final product = item['canteen_products'];
+                final shop = product['canteens'];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Card(
@@ -153,29 +148,18 @@ class OrderDetailsScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       product['name'],
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                     ),
-                                    Text('Quantity: ${item['quantity']}',
-                                        style: TextStyle(fontSize: 16)),
-                                    Text('Price: \$${item['price']}',
-                                        style: TextStyle(fontSize: 16)),
+                                    Text('Quantity: ${item['quantity']}', style: TextStyle(fontSize: 16)),
+                                    Text('Price: \$${item['price']}', style: TextStyle(fontSize: 16)),
                                   ],
                                 ),
                               ),
                             ],
                           ),
                           SizedBox(height: 16),
-                          Text('Shop: ${shop['name']}',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
-                          Text(
-                              'Address: ${shop['address_line']}, ${shop['place']}, ${shop['district']}, ${shop['state']}, ${shop['pincode']}',
-                              style: TextStyle(fontSize: 16)),
-                          Text(
-                              'Contact: ${shop['phone']}, ${shop['contact_email']}',
-                              style: TextStyle(fontSize: 16)),
+                          Text('Canteen: ${shop['name']}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          Text('Contact: ${shop['phone']}', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
