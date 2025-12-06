@@ -1,50 +1,137 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EventSection extends StatefulWidget {
-  const EventSection({super.key});
+import '../../common_widgets.dart/custom_search.dart';
+import 'event_details_screen.dart';
+import 'events_bloc/events_bloc.dart';
+
+class EventScreen extends StatefulWidget {
+  const EventScreen({super.key});
 
   @override
-  State<EventSection> createState() => _EventSectionState();
+  State<EventScreen> createState() => _EventScreenState();
 }
 
-class _EventSectionState extends State<EventSection> {
-  final List<String> eventImages = [
-    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cGFydHl8ZW58MHx8MHx8fDA%3D',
-    'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3BvcnRzfGVufDB8fDB8fHww',
-  ];
+class _EventScreenState extends State<EventScreen> {
+  Map<String, dynamic> params = {
+    'query': null,
+  };
+  final EventsBloc _eventBloc = EventsBloc();
+
+  @override
+  initState() {
+    getAllEvents();
+    super.initState();
+  }
+
+  void getAllEvents() {
+    _eventBloc.add(GetAllEventsEvent(params: params));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.all(16),
-      itemCount: eventImages.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 20),
-      itemBuilder: (context, index) {
-        return Container(
-          margin: const EdgeInsets.only(right: 10),
-          width: double.infinity,
-          height: 180,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            image: DecorationImage(
-              image: NetworkImage(eventImages[index]),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Name of Event',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return BlocProvider<EventsBloc>.value(
+      value: _eventBloc,
+      child: BlocConsumer<EventsBloc, EventsState>(
+        listener: (context, eventsState) {
+          if (eventsState is EventsFailureState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to load Event, Try Again!'),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          }
+        },
+        builder: (context, eventsState) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: CustomSearch(
+                  onSearch: (sp) {
+                    params['query'] = sp;
+                    getAllEvents();
+                  },
+                ),
+              ),
+              if (eventsState is EventsLoadingState)
+                Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              else if (eventsState is EventsGetSuccessState)
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: eventsState.events.length,
+                    itemBuilder: (context, index) {
+                      final store = eventsState.events[index];
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EventDetailsScreen(event: store),
+                              ),
+                            ).then((value) {
+                              getAllEvents();
+                            });
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                                    child: Image.network(
+                                      store['image_url']!,
+                                      height: 170,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  if (store['event_registrations']?.isNotEmpty == true)
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: Chip(
+                                        side: BorderSide.none,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
+                                        label: Text(
+                                          'Registered',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  store['title']!,
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

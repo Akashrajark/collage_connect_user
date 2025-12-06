@@ -1,3 +1,4 @@
+import 'package:college_connect_user/features/events/events.dart';
 import 'package:college_connect_user/features/home/order_screen.dart';
 import 'package:college_connect_user/features/profile/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     CanteenScreen(),
     OrderScreen(),
-    Container(
-      color: Colors.black,
-    ),
+    EventScreen(),
     Container(
       color: Colors.red,
     ),
