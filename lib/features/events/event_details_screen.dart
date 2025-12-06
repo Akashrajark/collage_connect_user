@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../common_widgets.dart/custom_alert_dialog.dart';
 import '../../common_widgets.dart/custom_button.dart';
 import '../../common_widgets.dart/custom_text_formfield.dart';
@@ -355,18 +354,13 @@ class EventDetailsScreen extends StatelessWidget {
               ],
             ),
           ),
-          InkWell(
-            onTap: () {
-              launchUrl(Uri.parse('tel:${event['phone']}'));
-            },
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.phone, color: Colors.green),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.green[50],
+              borderRadius: BorderRadius.circular(12),
             ),
+            child: const Icon(Icons.phone, color: Colors.green),
           ),
         ],
       ),
@@ -374,7 +368,6 @@ class EventDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildRegisterButton(BuildContext context, EventsState state) {
-    final bool isRegistered = event['event_registrations']?.isNotEmpty == true;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -390,15 +383,11 @@ class EventDetailsScreen extends StatelessWidget {
       ),
       child: SafeArea(
         child: CustomButton(
-          label: isRegistered ? 'Registered' : 'Register Now',
+          label: 'Register Now',
           isLoading: state is EventsLoadingState,
-          backGroundColor: isRegistered ? Colors.green : Theme.of(context).primaryColor,
-          inverse: true,
-          onPressed: isRegistered
-              ? () {}
-              : () {
-                  _showRegistrationDialog(context);
-                },
+          onPressed: () {
+            _showRegistrationDialog(context);
+          },
         ),
       ),
     );

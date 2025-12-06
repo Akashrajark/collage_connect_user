@@ -1,4 +1,5 @@
 import 'package:college_connect_user/features/events/events.dart';
+import 'package:college_connect_user/features/exams/exams_screen.dart';
 import 'package:college_connect_user/features/home/order_screen.dart';
 import 'package:college_connect_user/features/profile/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     CanteenScreen(),
     OrderScreen(),
     EventScreen(),
-    Container(
-      color: Colors.red,
-    ),
+    ExamsScreen(),
   ];
 
   void _onItemTapped(int index) {
