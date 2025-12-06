@@ -61,7 +61,7 @@ class _CartScreenState extends State<CartScreen> {
     // required String name,
   }) {
     var options = {
-      'key': 'rzp_test_7DHXFKNuMLiTBe', // Replace with your API Key
+      'key': 'Replace with your API Key', // Replace with your API Key
       'amount': amount * 100, // 100 INR (in paise)
       'name': "Canteen Order",
       'description': 'Test Payment',
