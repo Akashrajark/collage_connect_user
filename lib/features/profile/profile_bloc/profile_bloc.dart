@@ -19,7 +19,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
         if (event is GetAllProfileEvent) {
           PostgrestFilterBuilder<List<Map<String, dynamic>>> query =
-              table.select('*').eq('user_id', supabaseClient.auth.currentUser!.id);
+              table.select('*,courses(name)').eq('user_id', supabaseClient.auth.currentUser!.id);
 
           Map<String, dynamic> profile = await query.single();
 

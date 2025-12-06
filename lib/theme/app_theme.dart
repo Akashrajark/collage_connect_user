@@ -27,16 +27,11 @@ const surfaceColor = Color(0xFFFFFFFF);
 const errorColor = Color(0xFFB00020);
 
 // Text colors that contrast with the background colors
-const onprimaryColor =
-    Color(0xFFFFFFFF); // Text color used on primary (blue) color background
-const onSecondaryColor =
-    Color(0xFF303030); // Text color used on secondary (black) color background
-const onTertiaryColor =
-    Color(0xFFFFFFFF); // Text color used on tertiary (gray) color background
-const onSurfaceColor =
-    Color(0xFF7A7A7A); // Text color used on surface (white) color
-const onErrorColor =
-    Color(0xFFFFFFFF); // Text color used on error (red) color background
+const onprimaryColor = Color(0xFFFFFFFF); // Text color used on primary (blue) color background
+const onSecondaryColor = Color(0xFF303030); // Text color used on secondary (black) color background
+const onTertiaryColor = Color(0xFFFFFFFF); // Text color used on tertiary (gray) color background
+const onSurfaceColor = Color(0xFF7A7A7A); // Text color used on surface (white) color
+const onErrorColor = Color(0xFFFFFFFF); // Text color used on error (red) color background
 
 const Color outlineColor = Color(0xFFD7DEE0); //border color
 const Color onSecondaryContainer = Color(0xFF000000); //text color

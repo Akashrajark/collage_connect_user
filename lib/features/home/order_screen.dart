@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/web.dart';
 import '../../common_widgets.dart/custom_alert_dialog.dart';
+import 'order_details_screen.dart';
 import 'orders_bloc/orders_bloc.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -19,6 +20,17 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     _ordersBloc.add(GetAllOrdersEvent(params: {}));
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return Colors.orange;
+      case 'complete':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
   }
 
   @override
@@ -56,9 +68,13 @@ class _OrderScreenState extends State<OrderScreen> {
             return Center(child: Text('No orders available'));
           }
           return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
             itemCount: _orders.length,
             itemBuilder: (context, index) {
               final order = _orders[index];
+              final status = order['status']?.toString() ?? 'Unknown';
+              final statusColor = _getStatusColor(status);
+
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -68,107 +84,97 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                   );
                 },
-                child: ListTile(
-                  title: Text('Order #${order['id']}'),
-                  subtitle: Text('Status: ${order['status']}'),
-                  trailing: Text('\$${order['price']}'),
-                  tileColor: Colors.white.withAlpha(255),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(5),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
-                ),
-              );
-              // return ListTile(
-              //   title: Text('Order #${order['id']}'),
-              //   subtitle: Text('Status: ${order['status']}'),
-              //   trailing: Text('\$${order['price']}'),
-              // );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class OrderDetailsScreen extends StatelessWidget {
-  final Map<String, dynamic> order;
-
-  const OrderDetailsScreen({super.key, required this.order});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Order Details'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Order ID: ${order['id']}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
-              Text('Created At: ${order['created_at']}', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 16),
-              Text('Status: ${order['status']}', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 16),
-              Text('Price: \$${order['price']}', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 16),
-              Text('Items:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ...order['order_items'].map<Widget>((item) {
-                final product = item['canteen_products'];
-                final shop = product['canteens'];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: IntrinsicHeight(
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Image.network(
-                                product['image_url'],
-                                height: 50,
-                                width: 50,
-                                fit: BoxFit.cover,
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product['name'],
-                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                    ),
-                                    Text('Quantity: ${item['quantity']}', style: TextStyle(fontSize: 16)),
-                                    Text('Price: \$${item['price']}', style: TextStyle(fontSize: 16)),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Container(
+                            width: 6,
+                            color: statusColor,
                           ),
-                          SizedBox(height: 16),
-                          Text('Canteen: ${shop['name']}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          Text('Contact: ${shop['phone']}', style: TextStyle(fontSize: 16)),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Order #${order['id']}',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      Text(
+                                        '\$${order['price']}',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 5,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: statusColor.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          status.toUpperCase(),
+                                          style: TextStyle(
+                                            color: statusColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                );
-              }).toList(),
-            ],
-          ),
-        ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

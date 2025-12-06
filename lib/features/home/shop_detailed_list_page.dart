@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../common_widgets.dart/custom_alert_dialog.dart';
-import 'carts_bloc/carts_bloc.dart';
+import 'carts/carts_bloc/carts_bloc.dart';
 import 'product_card.dart';
 
 class ShopDetailedListPage extends StatefulWidget {

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'shop_detailed_list_page.dart';
-import 'shops_bloc/shops_bloc.dart';
+import '../home/shop_detailed_list_page.dart';
+import '../home/shops_bloc/shops_bloc.dart';
 
-class PetStoreScreen extends StatefulWidget {
-  const PetStoreScreen({super.key});
+class CanteenScreen extends StatefulWidget {
+  const CanteenScreen({super.key});
 
   @override
-  State<PetStoreScreen> createState() => _PetStoreScreenState();
+  State<CanteenScreen> createState() => _CanteenScreenState();
 }
 
-class _PetStoreScreenState extends State<PetStoreScreen> {
+class _CanteenScreenState extends State<CanteenScreen> {
   final ShopsBloc _shopBloc = ShopsBloc();
 
   @override

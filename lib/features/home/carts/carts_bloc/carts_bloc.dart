@@ -3,7 +3,7 @@ import 'package:logger/web.dart';
 import 'package:meta/meta.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../values/strings.dart';
+import '../../../../values/strings.dart';
 
 part 'carts_event.dart';
 part 'carts_state.dart';

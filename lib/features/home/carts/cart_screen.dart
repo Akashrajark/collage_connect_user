@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/web.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import '../../common_widgets.dart/custom_alert_dialog.dart';
+import '../../../common_widgets.dart/custom_alert_dialog.dart';
 import 'carts_bloc/carts_bloc.dart';
-import 'orders_bloc/orders_bloc.dart';
-import 'product_card.dart';
+import '../orders_bloc/orders_bloc.dart';
+import '../product_card.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
