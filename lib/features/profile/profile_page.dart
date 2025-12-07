@@ -1,4 +1,5 @@
 import 'package:college_connect_user/features/login/loginscreen.dart';
+import 'package:college_connect_user/features/subjects/subjects_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -250,6 +251,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
+          _buildActionButton(
+            context,
+            'Subjects',
+            Icons.book_outlined,
+            () {
+              if (_profile['course_id'] != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SubjectsScreen(
+                      courseId: _profile['course_id'],
+                    ),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Course not assigned')),
+                );
+              }
+            },
+          ),
+          const SizedBox(height: 16),
           _buildActionButton(
             context,
             'Change Password',
